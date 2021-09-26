@@ -4,9 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 
-namespace Colors
+namespace PalletLib
 {
-    class Pallet
+    public class Pallet
     {
         readonly Bitmap _bmp;
 
