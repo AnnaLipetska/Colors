@@ -23,6 +23,10 @@ namespace PalletLib
                     throw new Exception("Not a bitmap image!!!");
                 }
             }
+            else
+            {
+                throw new FileNotFoundException($"File {fileName} does not exist!!!");
+            }
         }
 
         public IEnumerable<KeyValuePair<Color, int>> GetMostFrequentColors(int number)
