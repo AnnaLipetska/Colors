@@ -10,19 +10,21 @@ namespace Colors
     {
         static void Main(string[] args)
         {
+            //var fileName = @"D:\test1.jpg";
             var fileName = @"D:\my_photo.jpg";
+            //var fileName = @"D:\small.jpg";
 
-            var pallet = new Pallet(fileName);
+            var pallet = ImageProcessor.GetPallet(fileName);
 
-            var number = pallet.CountImageColors();
+            var number = ImageProcessor.CountImageColors(fileName);
 
             Console.WriteLine($"Total number of colors: {number}");
 
-            var frequentColors = pallet.GetMostFrequentColors(10).ToList();
+            var abundantColors = pallet.GetMostCommonColors(10).ToList();
 
-            foreach (KeyValuePair<Color, int> color in frequentColors)
+            foreach (ColorAbundance colorAbundance in abundantColors)
             {
-                Console.WriteLine(color.Key + " -> " + color.Value);
+                Console.WriteLine(colorAbundance.PalletColor + " -> " + colorAbundance.Abundance);
             }
 
 

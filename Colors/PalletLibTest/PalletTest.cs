@@ -5,17 +5,17 @@ using PalletLib;
 namespace PalletLibTest
 {
     [TestClass]
-    public class PalletTest
+    public class ImageProcessorTest
     {
         [TestMethod]
         public void TestCountImageColorsJpg1()
         {
             var expected = 1;
 
-            string file = @"D:\test1.jpg";
-            var pallet = new Pallet(file);
+            string path = @"D:\test1.jpg";
+            //var pallet = ImageProcessor.GetPallet(path);
 
-            var actual = pallet.CountImageColors();
+            var actual = ImageProcessor.CountImageColors(path);
 
             Assert.AreEqual(expected, actual, $"Expected: {expected}, actual: {actual}"); 
         }
