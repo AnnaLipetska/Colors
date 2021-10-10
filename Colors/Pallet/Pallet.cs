@@ -6,36 +6,76 @@ using System.Linq;
 
 namespace PalletLib
 {
+    public struct ColorAbundance
+    {
+        public Color PalletColor { get; set; }
+        public int Abundance { get; set; }
+
+        public ColorAbundance(Color color, int abundance)
+        {
+            PalletColor = color;
+            Abundance = abundance;
+        }
+    }
+
     public class Pallet
     {
         readonly Bitmap _bmp;
 
-        public Pallet(string fileName)
+        IList<ColorAbundance> _colors = new List<ColorAbundance>();
+
+        int this[Color color]
         {
-            if (File.Exists(fileName))
+            get => _colors.Where(c => c.PalletColor == color).Select(c => c.Abundance).FirstOrDefault();
+            set 
             {
-                try
+                if (_colors.Any(c => c.PalletColor == color))
                 {
-                    _bmp = new Bitmap(fileName);
+                    var colorAbundance = _colors.Where(c => c.PalletColor == color).FirstOrDefault();
+                    _colors.Remove(colorAbundance);
                 }
-                catch
+                if (value > 0)
                 {
-                    throw new Exception("Not a bitmap image!!!");
+                    _colors.Add(new ColorAbundance(color, value));
                 }
-            }
-            else
+            } 
+        }
+
+        public Pallet(Bitmap bmp)
+        {
+            _bmp = bmp;
+            //InitColors();
+            InitColorsForBiggerPicturesBruteForce();
+        }
+
+        public Pallet(Bitmap bmp, int downgradeSquares)
+        {
+            _bmp = bmp;
+            InitColorsWithDownGrade(downgradeSquares);
+        }
+
+        public IEnumerable<ColorAbundance> GetMostCommonColors(int number)
+        {
+            return _colors.OrderByDescending(c => c.Abundance).Take(number);
+        }
+
+        void InitColorsForSmallPicturesOnlyBruteForce() // Looks nice, but awfully slow for bigger pictures
+        {
+            if (_bmp != null)
             {
-                throw new FileNotFoundException($"File {fileName} does not exist!!!");
+                for (int y = 0; y < _bmp.Size.Height; y++)
+                {
+                    for (int x = 0; x < _bmp.Size.Width; x++)
+                    {
+                        var pixel = _bmp.GetPixel(x, y);
+
+                        this[pixel]++;
+                    }
+                }
             }
         }
 
-        public IEnumerable<KeyValuePair<Color, int>> GetMostFrequentColors(int number)
-        {
-            var colors = GetAllColors();
-            return colors.OrderByDescending(c => c.Value).Take(number);
-        }
-
-        IDictionary<Color, int> GetAllColors()
+        void InitColorsForBiggerPicturesBruteForce() // Faster because dictionaries work with HashCodes
         {
             var colors = new Dictionary<Color, int>();
 
@@ -58,27 +98,15 @@ namespace PalletLib
                 }
             }
 
-            return colors;
+            foreach (var color in colors)
+            {
+                _colors.Add(new ColorAbundance(color.Key, color.Value));
+            }
         }
 
-        public int CountImageColors()
+        void InitColorsWithDownGrade(int squares)
         {
-            var count = 0;
-            var colors = new HashSet<Color>();
-
-            if (_bmp != null)
-            {
-                for (int y = 0; y < _bmp.Size.Height; y++)
-                {
-                    for (int x = 0; x < _bmp.Size.Width; x++)
-                    {
-                        colors.Add(_bmp.GetPixel(x, y));
-                    }
-                }
-                count = colors.Count;
-            }
-
-            return count;
+            //TODO: Write some code here
         }
     }
 }
