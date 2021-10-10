@@ -18,6 +18,7 @@ namespace Colors
         {
 
             DoWork();
+            NotWorking();
 
             //var fileName = @"D:\test1.jpg";
             var fileName = @"D:\my_photo.jpg";
@@ -38,6 +39,29 @@ namespace Colors
 
 
             Console.ReadKey();
+        }
+
+        private static async void NotWorking()
+        {
+            var url = "https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs?Authorization=183d315df7b4488a9c177c70f29f9dcd";
+
+            var request = WebRequest.Create(url);
+            request.Method = "POST";
+            request.Headers.Add(HttpRequestHeader.Authorization, "Key a91dbe59965a47f1a5ad0a269f460abb");
+            request.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+
+            var json = "{\"inputs\":[{\"data\":{\"image\":{\"url\":\"https://www.thoughtco.com/thmb/07W0mpQ_K2BG2GNdi1AiFFlUDeI=/768x0/filters:no_upscale():max_bytes(150000):strip_icc()/chemistry-glassware-56a12a083df78cf772680235.jpg\"}}}]}";
+
+
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+
+            using var client = new HttpClient();
+
+            var resp = await client.PostAsync(url, data);
+
+            string result = resp.Content.ReadAsStringAsync().Result;
+            Console.WriteLine(result);
         }
 
         private static void DoWork()
